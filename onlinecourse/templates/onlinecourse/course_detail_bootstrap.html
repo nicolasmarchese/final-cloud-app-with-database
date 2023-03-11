@@ -50,6 +50,52 @@
                     </div>
                 {% endfor %}
             </div>
+
+            {% extends "onlinecourse/base_bootstrap.html" %}
+
+{% block content %}
+  <div class="container my-5">
+    <div class="row">
+      <div class="col-md-8">
+        <h2>{{ course.title }}</h2>
+        <p>{{ course.description }}</p>
+      </div>
+      {% if request.user.is_authenticated %}
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Course Exam</h5>
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#exam" aria-expanded="false" aria-controls="exam">
+              Start Exam
+            </button>
+            <div class="collapse" id="exam">
+              <form method="post" action="{% url 'submit_exam' course.id %}">
+                {% csrf_token %}
+                {% for example in course.examples.all %}
+                <h6>{{ example.title }}</h6>
+                {% for question in example.questions.all %}
+                <p>{{ question.text }}</p>
+                {% for choice in question.choices.all %}
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="{{ example.id }}_{{ question.id }}_{{ choice.id }}" name="{{ example.id }}_{{ question.id }}_choice" value="{{ choice.id }}">
+                  <label class="form-check-label" for="{{ example.id }}_{{ question.id }}_{{ choice.id }}">
+                    {{ choice.text }}
+                  </label>
+                </div>
+                {% endfor %}
+                {% endfor %}
+                {% endfor %}
+                <button type="submit" class="btn btn-primary mt-3">Submit Exam</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
             <!-- Task: show questions and choices -->
             <!-- <HINT> Use Bootstrap Collapse to hide exam first, more details could be found here
             https://www.w3schools.com/bootstrap4/bootstrap_collapse.asp-->
