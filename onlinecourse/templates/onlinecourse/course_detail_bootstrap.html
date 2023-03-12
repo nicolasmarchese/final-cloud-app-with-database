@@ -49,53 +49,43 @@
                         <div class="card-body">{{lesson.content}}</div>
                     </div>
                 {% endfor %}
+
+                {% if user.is_authenticated %}
+
+                    <button class = "btn btn-info btn-block"  data-toggle="collapse" data-target="#exam">Start Exam</button>
+
+                    <div id="exam" class="collapse">
+                        <form id="questionform" action="point to a submit view" method="post">
+                            {% for question in course.question_set.all %}
+                            <div class="card mt-1">
+                                <div class="card-header"><h5>{{question.text}}</h5></div>
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    {% for choice in question.choice_set.all %}
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" name="choice_{{choice.id}}"
+                                                   class="form-check-input" id="{{choice.id}}"
+                                                   value="{{choice.id}}">{{ choice.text }}
+                                        </label>
+                                    </div>
+                                    {%endfor%}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        <input class="btn btn-success btn-block" type="submit" value="Submit">
+                </form>
+
+                    </div>
+
+
+                
+                {% endif %}
+
             </div>
 
-            {% extends "onlinecourse/base_bootstrap.html" %}
 
-{% block content %}
-  <div class="container my-5">
-    <div class="row">
-      <div class="col-md-8">
-        <h2>{{ course.title }}</h2>
-        <p>{{ course.description }}</p>
-      </div>
-      {% if request.user.is_authenticated %}
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Course Exam</h5>
-            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#exam" aria-expanded="false" aria-controls="exam">
-              Start Exam
-            </button>
-            <div class="collapse" id="exam">
-              <form method="post" action="{% url 'submit_exam' course.id %}">
-                {% csrf_token %}
-                {% for example in course.examples.all %}
-                <h6>{{ example.title }}</h6>
-                {% for question in example.questions.all %}
-                <p>{{ question.text }}</p>
-                {% for choice in question.choices.all %}
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="{{ example.id }}_{{ question.id }}_{{ choice.id }}" name="{{ example.id }}_{{ question.id }}_choice" value="{{ choice.id }}">
-                  <label class="form-check-label" for="{{ example.id }}_{{ question.id }}_{{ choice.id }}">
-                    {{ choice.text }}
-                  </label>
-                </div>
-                {% endfor %}
-                {% endfor %}
-                {% endfor %}
-                <button type="submit" class="btn btn-primary mt-3">Submit Exam</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endif %}
-    </div>
-  </div>
-{% endblock %}
-
+  
             <!-- Task: show questions and choices -->
             <!-- <HINT> Use Bootstrap Collapse to hide exam first, more details could be found here
             https://www.w3schools.com/bootstrap4/bootstrap_collapse.asp-->

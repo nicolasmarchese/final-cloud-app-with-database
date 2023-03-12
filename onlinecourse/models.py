@@ -63,9 +63,12 @@ class Course(models.Model):
     total_enrollment = models.IntegerField(default=0)
     is_enrolled = False
 
+    def instructor(self):
+        return self.instructors.all().first()
+
     def __str__(self):
-        return "Name: " + self.name + "," + \
-               "Description: " + self.description
+        return self.name 
+               
 
 
 # Lesson model
@@ -74,6 +77,9 @@ class Lesson(models.Model):
     order = models.IntegerField(default=0)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     content = models.TextField()
+
+    def __str__(self):
+        return self.title
 
 
 # Enrollment model
@@ -106,18 +112,14 @@ class Enrollment(models.Model):
     # question grade/mark
 
 class Question(models.Model):
-    lesson = models.ForeignKey('Lesson', on_delete=models.CASCADE)
-    text = models.TextField()
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    text = models.CharField(max_length=200)
     grade = models.IntegerField()
 
     def __str__(self):
-        return self.text[:50]
+        return self.text
 
-    class Meta:
-        verbose_name = "Question"
-        verbose_name_plural = "Questions"
-
-    
     #A sample model method to calculate if learner get the score of the question
     def is_get_score(self, selected_ids):
         all_answers = self.choice_set.filter(is_correct=True).count()
@@ -136,17 +138,13 @@ class Question(models.Model):
     # Other fields and methods you would like to design
 
 class Choice(models.Model):
-      question = models.ForeignKey('Question', on_delete=models.CASCADE)
+      question = models.ForeignKey(Question, on_delete=models.CASCADE)
       text = models.CharField(max_length=255)
       is_correct = models.BooleanField(default=False)
 
       def __str__(self):
-          return self.text[:50]
-
-      class Meta:
-          verbose_name = "Choice"
-          verbose_name_plural = "Choices"
-
+          return self.text
+     
 # <HINT> The submission model
 # One enrollment could have multiple submission
 # One submission could have multiple choices
