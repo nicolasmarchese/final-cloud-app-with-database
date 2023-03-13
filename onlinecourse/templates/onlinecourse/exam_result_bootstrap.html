@@ -58,11 +58,18 @@
                 {% csrf_token %}
                 <div class="card-body">
                     {% for choice in question.choice_set.all %}
+
+                    {% if choice.is_correct %}
                     
-                     <p>{{ choice.text }}</p>  
-                       
-                    </div>
-                    {%endfor%}
+                     <p class="text-success">Correct answer: {{ choice.text}}</p> 
+
+                     {% else %}
+
+                     <p>{{ choice.text }}</p>
+
+
+                    {% endif %}
+                 {%endfor%}
                 </div>
             </div>
 
