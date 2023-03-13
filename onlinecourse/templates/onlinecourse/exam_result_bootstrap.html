@@ -49,34 +49,26 @@
         <a class="btn btn-link text-danger" href="{% url 'onlinecourse:course_details' course.id %}">Re-test</a>
         {% endif %}
         <div class="card-columns-vertical mt-1">
-            <!--Exam final results-->
+
+    <!--Exam final results-->
         <h5 class="">Exam results</h5>
-        <table class="table">
-            <thead>
-              <tr>
-                <th>Question</th>
-                <th>Your answer</th>
-                <th>Correct answer</th>
-                <th>Result</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for question, answer, correct_answer, result in results %}
-              <tr>
-                <td>{{ question }}</td>
-                <td>{{ answer }}</td>
-                <td>{{ correct_answer }}</td>
-                <td {% if result %}class="text-success"{% else %}class="text-danger"{% endif %}>
-                  {% if result %}Correct{% else %}Incorrect{% endif %}
-                </td>
-              </tr>
-              {% endfor %}
-              <tr>
-                <td colspan="3"><strong>Total score:</strong></td>
-                <td {% if grade > 80 %}class="text-success"{% else %}class="text-danger"{% endif %}><strong>{{ grade }}%</strong></td>
-              </tr>
-            </tbody>
-          </table>
+            {% for question in course.question_set.all %}
+                <div class="card mt-1">
+                <div class="card-header"><h5>{{question.text}}</h5></div>
+                {% csrf_token %}
+                <div class="card-body">
+                    {% for choice in question.choice_set.all %}
+                    
+                     <p>{{ choice.text }}</p>  
+                       
+                    </div>
+                    {%endfor%}
+                </div>
+            </div>
+
+            {%endfor%}
+
+      
         </div>
     </div>
 </body>

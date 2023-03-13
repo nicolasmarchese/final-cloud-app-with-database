@@ -155,10 +155,11 @@ def show_exam_result(request, course_id, submission_id):
             
 
     # Calculate the total score
+    grade = 0
     max_grade = 100
-    grade = int((max_score/score) * max_grade)
+    if score != 0:
+        grade = int((score/max_score) * max_grade)
     
-   
     # Add the course, selected choice ids, and total score to context for rendering HTML page
     context = {
         'course': course,
